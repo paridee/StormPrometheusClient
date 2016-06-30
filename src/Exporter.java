@@ -76,6 +76,7 @@ public class Exporter {
 			logger.debug("cycle");
 			JSONObject	summary	=	null;
 			resetGauges();
+			this.gauges.clear();
 			try {
 				summary					=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/summary");
 				JSONArray	topologies	=	summary.getJSONArray("topologies");
@@ -104,6 +105,7 @@ public class Exporter {
 							uptimes	=	Gauge.build().name("uptime").help("Topology uptime (seconds)").labelNames(labels).register();
 							gauges.put("uptime", uptimes);
 						}
+						System.out.println("Uptimes instance "+uptimes);
 						uptimes.setChild(uptime, labelsTop);
 						uptime.set((3600*uptInt[0])+(60*uptInt[1])+uptInt[2]);
 						this.makeGauge(topology,Integer.class, "tasksTotal", "Total number of tasks for this topology", labels, labelsTop);
