@@ -59,6 +59,7 @@ public class Exporter {
 			value		=	obj.getInt(name);
 		}
 		else if(aClass.equals(String.class)){
+			logger.debug("reading string "+obj.getString(name));
 			value		=	Double.parseDouble(obj.getString(name));
 		}
 		Gauge.Child	childG=	new Gauge.Child();
