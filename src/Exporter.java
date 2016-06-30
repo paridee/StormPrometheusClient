@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
@@ -86,7 +87,7 @@ public class Exporter {
 					JSONObject	topology	=	topologies.getJSONObject(i);
 					//logger.debug("Topology:\n\n"+topology.toString());
 					if(topology.getString("status").equals("ACTIVE")){
-						this.activeTopologies.add(topology.getString("id"));
+						this.activeTopologies.add(topology.getString("encodedId"));
 						logger.debug("Active topology found: "+topology.getString("id"));
 						String uptStr	=	topology.getString("uptime");
 						String[] upt	=	uptStr.split(" ");
@@ -111,9 +112,9 @@ public class Exporter {
 						this.makeGauge(topology,Integer.class, "tasksTotal", "Total number of tasks for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "workersTotal", "Number of workers used for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "executorsTotal", "Number of executors used for this topology", labels, labelsTop);
-						JSONObject 	topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id")+"?window="+windowSize);
+						JSONObject 	topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id"));
 						JSONArray	spoutsArray		=	topologyJson.getJSONArray("spouts");
-						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");
+						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");						
 						processSpoutsArray(spoutsArray,topology.getString("name"));
 						processBoltsArray(boltsArray,topology.getString("name"));
 					}
