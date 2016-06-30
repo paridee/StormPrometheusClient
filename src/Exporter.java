@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
@@ -28,6 +29,7 @@ public class Exporter {
 	String clientPort;
 	ArrayList<String> 	activeTopologies	=	new ArrayList();
 	private String windowSize;
+	HashMap<String,Gauge> gauges	=	new HashMap<String,Gauge>();
 	
 	public Exporter(String url, String port1, String port2, String window) {
 		super();
@@ -43,7 +45,14 @@ public class Exporter {
 	}
 	
 	private void makeGauge(JSONObject obj,Class aClass,String name,String help,String[]	labels,String[]	labelsValue){
-		Gauge 	shellGauge	=	Gauge.build().name(name).help(help).labelNames(labels).register();
+		Gauge 	shellGauge;
+		if(this.gauges.containsKey(name)){
+			shellGauge	=	gauges.get(name);
+		}
+		else{
+			shellGauge	=	Gauge.build().name(name).help(help).labelNames(labels).register();
+			gauges.put(name, shellGauge);
+		}
 		double value	=	0;
 		if(aClass.equals(Integer.class)){
 			value		=	obj.getInt(name);
@@ -87,7 +96,14 @@ public class Exporter {
 						Gauge.Child	uptime	=	new Gauge.Child();
 						String[] labelsTop	=	new String[1];
 						labelsTop[0]		=	topology.getString("name");
-						Gauge uptimes	=	Gauge.build().name("uptime").help("Topology uptime (seconds)").labelNames(labels).register();
+						Gauge uptimes;
+						if(this.gauges.containsKey("uptime")){
+							uptimes	=	this.gauges.get(uptime);
+						}
+						else{
+							uptimes	=	Gauge.build().name("uptime").help("Topology uptime (seconds)").labelNames(labels).register();
+							gauges.put("uptime", uptimes);
+						}
 						uptimes.setChild(uptime, labelsTop);
 						uptime.set((3600*uptInt[0])+(60*uptInt[1])+uptInt[2]);
 						this.makeGauge(topology,Integer.class, "tasksTotal", "Total number of tasks for this topology", labels, labelsTop);
