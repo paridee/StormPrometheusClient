@@ -92,7 +92,7 @@ public class Exporter {
 						logger.debug("Active topology found: "+topology.getString("id"));
 						String uptStr	=	topology.getString("uptime");
 						String[] upt	=	uptStr.split(" ");
-						int[]	uptInt	=	new int[3];		
+						int[]	uptInt	=	new int[5];		
 						for(int j=0;j<upt.length;j++){
 							uptInt[j]	=	Integer.parseInt(upt[j].substring(0, upt[j].length()-1));
 						}
