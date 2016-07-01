@@ -99,17 +99,6 @@ public class Exporter {
 						Gauge.Child	uptime	=	new Gauge.Child();
 						String[] labelsTop	=	new String[1];
 						labelsTop[0]		=	topology.getString("name");
-						Gauge uptimes;
-						if(this.gauges.containsKey("uptime")){
-							uptimes	=	this.gauges.get(uptime);
-						}
-						else{
-							uptimes	=	Gauge.build().name("uptime").help("Topology uptime (seconds)").labelNames(labels).register();
-							gauges.put("uptime", uptimes);
-						}
-						System.out.println("Uptimes instance "+uptimes);
-						uptimes.setChild(uptime, labelsTop);
-						uptime.set((3600*uptInt[0])+(60*uptInt[1])+uptInt[2]);
 						this.makeGauge(topology,Integer.class, "tasksTotal", "Total number of tasks for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "workersTotal", "Number of workers used for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "executorsTotal", "Number of executors used for this topology", labels, labelsTop);
