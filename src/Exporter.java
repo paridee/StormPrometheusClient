@@ -102,7 +102,7 @@ public class Exporter {
 						this.makeGauge(topology,Integer.class, "tasksTotal", "Total number of tasks for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "workersTotal", "Number of workers used for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "executorsTotal", "Number of executors used for this topology", labels, labelsTop);
-						JSONObject 	topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id"));
+						JSONObject 	topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id")+"?window=600");
 						JSONArray	spoutsArray		=	topologyJson.getJSONArray("spouts");
 						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");						
 						processSpoutsArray(spoutsArray,topology.getString("name"));
