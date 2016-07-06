@@ -59,7 +59,7 @@ public class Exporter {
 			value		=	obj.getInt(name);
 		}
 		else if(aClass.equals(String.class)){
-			logger.debug("reading string "+obj.getString(name));
+			//logger.debug("reading string "+obj.getString(name));
 			value		=	Double.parseDouble(obj.getString(name));
 		}
 		Gauge.Child	childG=	new Gauge.Child();
@@ -103,6 +103,8 @@ public class Exporter {
 						this.makeGauge(topology,Integer.class, "workersTotal", "Number of workers used for this topology", labels, labelsTop);
 						this.makeGauge(topology,Integer.class, "executorsTotal", "Number of executors used for this topology", labels, labelsTop);
 						JSONObject 	topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id")+"?window=600");
+						this.makeGauge(topologyJson,Integer.class, "window", "Window size for metric misuration", labels, labelsTop);
+						
 						JSONArray	spoutsArray		=	topologyJson.getJSONArray("spouts");
 						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");						
 						processSpoutsArray(spoutsArray,topology.getString("name"));
@@ -123,7 +125,7 @@ public class Exporter {
 			}	
 		}
 	}
-
+	
 	private void processBoltsArray(JSONArray boltsArray, String string) {
 		String[]	labels		=	new String[2];
 		labels[0]				=	"name";
@@ -153,6 +155,7 @@ public class Exporter {
 			this.makeGauge(spout,Integer.class, "executors", "	Number of executors for the spout", labels, labelsV);
 			this.makeGauge(spout,String.class, "completeLatency", "Total latency for processing the message", labels, labelsV);
 			this.makeGauge(spout,Integer.class, "tasks", "Total number of tasks for the spout", labels, labelsV);
+			this.makeGauge(spout,Integer.class, "emitted", "Emitted tuple from the spout", labels, labelsV);
 		}
 	}
 
