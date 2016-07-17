@@ -155,6 +155,7 @@ public class Exporter {
 			this.makeGauge(spout,Integer.class, "executors", "	Number of executors for the spout", labels, labelsV);
 			this.makeGauge(spout,String.class, "completeLatency", "Total latency for processing the message", labels, labelsV);
 			this.makeGauge(spout,Integer.class, "tasks", "Total number of tasks for the spout", labels, labelsV);
+			this.makeGauge(spout,Integer.class, "acked", "Total number of acked for the spout", labels, labelsV);
 			this.makeGauge(spout,Integer.class, "emitted", "Emitted tuple from the spout", labels, labelsV);
 		}
 	}
