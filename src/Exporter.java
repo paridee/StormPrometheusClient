@@ -139,6 +139,7 @@ public class Exporter {
 			this.makeGauge(bolt,String.class, "processLatency", "Bolt's average time to ack a message after it's received", labels, labelsV);
 			this.makeGauge(bolt,String.class, "executeLatency", "Average time for bolt's execute method", labels, labelsV);
 			this.makeGauge(bolt,Integer.class, "tasks", "Total number of tasks for the bolt", labels, labelsV);
+			this.makeGauge(bolt,Integer.class, "executed", "Total number of tasks for the bolt", labels, labelsV);
 			this.makeGauge(bolt,Integer.class, "executors", "	Number of executors for the spout", labels, labelsV);
 		}
 	}
