@@ -44,15 +44,17 @@ public class Exporter {
 	private void resetGauges(){
 		CollectorRegistry.defaultRegistry.clear();;
 	}
-	
 	private void makeGauge(JSONObject obj,Class aClass,String name,String help,String[]	labels,String[]	labelsValue){
+		makeGauge(obj,aClass,"",name,help,labels,labelsValue);
+	}
+	private void makeGauge(JSONObject obj,Class aClass,String namePref,String name,String help,String[]	labels,String[]	labelsValue){
 		Gauge 	shellGauge;
 		if(this.gauges.containsKey(name)){
 			shellGauge	=	gauges.get(name);
 		}
 		else{
-			shellGauge	=	Gauge.build().name(name).help(help).labelNames(labels).register();
-			gauges.put(name, shellGauge);
+			shellGauge	=	Gauge.build().name(namePref+name).help(help).labelNames(labels).register();
+			gauges.put(namePref+name, shellGauge);
 		}
 		double value	=	0;
 		if(aClass.equals(Integer.class)){
@@ -109,6 +111,8 @@ public class Exporter {
 						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");						
 						processSpoutsArray(spoutsArray,topology.getString("name"));
 						processBoltsArray(boltsArray,topology.getString("name"));
+						topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id"));
+						processSpoutsArray(spoutsArray,topology.getString("name"),"allTime");
 					}
 				}
 			} catch (JSONException | IOException e) {
@@ -125,7 +129,12 @@ public class Exporter {
 			}	
 		}
 	}
-	
+
+
+	private void processSpoutsArray(JSONArray spoutsArray, String string) {
+		processSpoutsArray(spoutsArray,string,"");
+	}
+
 	private void processBoltsArray(JSONArray boltsArray, String string) {
 		String[]	labels		=	new String[2];
 		labels[0]				=	"name";
@@ -144,7 +153,7 @@ public class Exporter {
 		}
 	}
 
-	private void processSpoutsArray(JSONArray spoutsArray, String string) {
+	private void processSpoutsArray(JSONArray spoutsArray, String string, String pref) {
 		String[]	labels		=	new String[2];
 		labels[0]				=	"name";
 		labels[1]				=	"operatorName";
@@ -153,11 +162,11 @@ public class Exporter {
 			String[]	labelsV		=	new String[2];
 			labelsV[0]				=	string;
 			labelsV[1]				=	spout.getString("spoutId");
-			this.makeGauge(spout,Integer.class, "executors", "	Number of executors for the spout", labels, labelsV);
-			this.makeGauge(spout,String.class, "completeLatency", "Total latency for processing the message", labels, labelsV);
-			this.makeGauge(spout,Integer.class, "tasks", "Total number of tasks for the spout", labels, labelsV);
-			this.makeGauge(spout,Integer.class, "acked", "Total number of acked for the spout", labels, labelsV);
-			this.makeGauge(spout,Integer.class, "emitted", "Emitted tuple from the spout", labels, labelsV);
+			this.makeGauge(spout,Integer.class,pref, "executors", "	Number of executors for the spout", labels, labelsV);
+			this.makeGauge(spout,String.class,pref, "completeLatency", "Total latency for processing the message", labels, labelsV);
+			this.makeGauge(spout,Integer.class,pref, "tasks", "Total number of tasks for the spout", labels, labelsV);
+			this.makeGauge(spout,Integer.class,pref, "acked", "Total number of acked for the spout", labels, labelsV);
+			this.makeGauge(spout,Integer.class,pref, "emitted", "Emitted tuple from the spout", labels, labelsV);
 		}
 	}
 
