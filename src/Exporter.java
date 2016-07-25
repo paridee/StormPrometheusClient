@@ -49,8 +49,8 @@ public class Exporter {
 	}
 	private void makeGauge(JSONObject obj,Class aClass,String namePref,String name,String help,String[]	labels,String[]	labelsValue){
 		Gauge 	shellGauge;
-		if(this.gauges.containsKey(name)){
-			shellGauge	=	gauges.get(name);
+		if(this.gauges.containsKey(namePref+name)){
+			shellGauge	=	gauges.get(namePref+name);
 		}
 		else{
 			shellGauge	=	Gauge.build().name(namePref+name).help(help).labelNames(labels).register();
@@ -111,7 +111,9 @@ public class Exporter {
 						JSONArray	boltsArray		=	topologyJson.getJSONArray("bolts");						
 						processSpoutsArray(spoutsArray,topology.getString("name"));
 						processBoltsArray(boltsArray,topology.getString("name"));
+						logger.debug("ALL TIME REQUEST");
 						topologyJson	=	readJsonFromUrl(UIUrl+":"+UIPort+"/api/v1/topology/"+topology.getString("id"));
+						spoutsArray		=	topologyJson.getJSONArray("spouts");
 						processSpoutsArray(spoutsArray,topology.getString("name"),"allTime");
 					}
 				}
@@ -167,6 +169,9 @@ public class Exporter {
 			this.makeGauge(spout,Integer.class,pref, "tasks", "Total number of tasks for the spout", labels, labelsV);
 			this.makeGauge(spout,Integer.class,pref, "acked", "Total number of acked for the spout", labels, labelsV);
 			this.makeGauge(spout,Integer.class,pref, "emitted", "Emitted tuple from the spout", labels, labelsV);
+		}
+		if(pref.equals("")==false){
+			logger.debug("SENT WITH PREFIX TO GATEWAY");
 		}
 	}
 
