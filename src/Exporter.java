@@ -62,7 +62,9 @@ public class Exporter {
 		}
 		else if(aClass.equals(String.class)){
 			//logger.debug("reading string "+obj.getString(name));
-			value		=	Double.parseDouble(obj.getString(name));
+			String stringValue	=	obj.getString(name);
+			stringValue			=	stringValue.replace(",", ".");
+			value				=	Double.parseDouble(stringValue);
 		}
 		Gauge.Child	childG=	new Gauge.Child();
 		childG.set(value);
