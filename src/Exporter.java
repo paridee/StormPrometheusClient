@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -28,7 +31,7 @@ public class Exporter {
 	String UIUrl;
 	String UIPort;
 	String clientPort;
-	ArrayList<String> 	activeTopologies	=	new ArrayList();
+	ArrayList<String> 	activeTopologies	=	new ArrayList<String>();
 	private String windowSize;
 	HashMap<String,Gauge> gauges	=	new HashMap<String,Gauge>();
 	
@@ -119,11 +122,21 @@ public class Exporter {
 						processSpoutsArray(spoutsArray,topology.getString("name"),"allTime");
 					}
 				}
-			} catch (JSONException | IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				logger.debug(e.getMessage());
-				return;
+				try {
+					PrintWriter writer	=	new PrintWriter("ExceptionLog"+System.currentTimeMillis()+".txt", "UTF-8");
+					writer.write(e.getMessage());
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			try {
 				Thread.sleep(Integer.parseInt(this.windowSize)*1000);
